@@ -1,0 +1,95 @@
+@startuml
+
+enum MarioState {
+    SONRIENDO
+    HAMBRIADO
+    COMIENDO
+    DURMIENDO
+    ENFERMANDOSE
+    CURANDOSE
+    BRINCANDO
+    MURIENDO
+}
+
+enum DecisionType {
+    NINGUNA
+    HAMBRE
+    ENFERMO
+    SUENO
+    JUGAR
+}
+
+class Button {
+    - shape: sf::RectangleShape
+    - text: sf::Text
+    - visible: bool
+    - fontLoaded: bool
+    + Button(x: float, y: float, width: float, height: float, btnText: string, font: sf::Font*, bgColor: sf::Color)
+    + setVisible(v: bool): void
+    + isVisible(): bool
+    + setText(newText: string, font: sf::Font*): void
+    + isClicked(mousePos: sf::Vector2i): bool
+    + draw(window: sf::RenderWindow&): void
+}
+
+class MarioTamagotchi {
+    - hunger: int
+    - health: int
+    - energy: int
+    - isSleeping: bool
+    - isSick: bool
+    - isDead: bool
+    - statTimer: sf::Clock
+    - actionTimer: sf::Clock
+    - textures: std::map<MarioState, sf::Texture>
+    - sprite: sf::Sprite
+    - currentState: MarioState
+    - activeDecision: DecisionType
+    - hasTextures: bool
+    - loadTextures(): void
+    - setState(newState: MarioState): void
+    + MarioTamagotchi()
+    + feed(): void
+    + cure(): void
+    + sleep(): void
+    + jump(): void
+    + rejectFood(): void
+    + rejectCure(): void
+    + rejectSleep(): void
+    + rejectJump(): void
+    + update(): void
+    + draw(window: sf::RenderWindow&): void
+    + getHunger(): int
+    + getHealth(): int
+    + getEnergy(): int
+    + getIsSick(): bool
+    + getIsSleeping(): bool
+    + getIsDead(): bool
+    + getActiveDecision(): DecisionType
+}
+
+class GameEngine {
+    - window: sf::RenderWindow
+    - mario: MarioTamagotchi
+    - font: sf::Font
+    - uiText: sf::Text
+    - questionText: sf::Text
+    - hasFont: bool
+    - btnOption1: Button*
+    - btnOption2: Button*
+    - initUI(): void
+    - processInput(): void
+    - update(): void
+    - render(): void
+    + GameEngine()
+    + ~GameEngine()
+    + run(): void
+}
+
+GameEngine "1" *-- "1" MarioTamagotchi : contiene
+GameEngine "1" *-- "2" Button : controla
+MarioTamagotchi --> MarioState : usa
+MarioTamagotchi --> DecisionType : usa
+GameEngine ..> DecisionType : consulta
+
+@enduml
